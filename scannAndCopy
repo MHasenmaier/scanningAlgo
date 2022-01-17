@@ -33,8 +33,6 @@ function lookingFor()
   var writeCounter = 1;
   var sensorCounter = 0;
 
-  var arrayWriting = "";
-
   var sheetData = sheetRead.getDataRange().getValues();
   var sensorID = parseInt(sheetWrite.getRange(sensorRow,sensorCol).getValue(), 16);
   Logger.log("sensorID:: " + sensorID);
@@ -55,9 +53,6 @@ function lookingFor()
       for (readCol; readCol <= readLastCol; readCol++)
       {
         Logger.log("log:: position (readRow " + readRow + "/readCol " + readCol + ") :: at " + readCol + ". turn on readCol :::: position(writeRow " + writeRow + "/writeCol " + writeCol + "):: at " + writeCounter + ". turn on writeCounter ");
-        arrayWriting = arrayWriting + sheetData[readRow][readCol];
-        Logger.log("log:: sheetData[" + readRow + "][" + readCol + "] (" + arrayWriting + ") === sensorID (" + sensorID + ")");
-        arrayWriting = "";
 
         if (sheetData[readRow][readCol] === sensorID)
         {
