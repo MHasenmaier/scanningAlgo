@@ -23,8 +23,8 @@ function lookingFor()
 
   var readLastCol = sheetRead.getLastColumn();
 
-  var readCol = 0;
-  var readRow = 1;
+  var readCol = 1;
+  var readRow = 2;
 
   var writeCol = 1;
   var writeRow = 9;
@@ -37,11 +37,10 @@ function lookingFor()
   var sensorID = parseInt(sheetWrite.getRange(sensorRow,sensorCol).getValue(), 16);
   Logger.log("sensorID:: " + sensorID);
 
-
   while (sheetWrite.getRange(sensorRow, sensorCol).isBlank() === false)
   {
     Logger.log("\n");
-    Logger.log("SensorCounter :: " + sensorCounter + " :: sensorRow " + sensorRow);
+    Logger.log("SensorCounter :: " + sensorCounter + " :: cell (" + sensorRow + "/" + sensorCol + ")");
     Logger.log("sheetData.length :: " + sheetData.length);
 
     var sensorID = parseInt(sheetWrite.getRange(sensorRow,sensorCol).getValue(), 16);
@@ -68,14 +67,18 @@ function lookingFor()
 
           writeCounter++;
           Logger.log("log:: cell " + sheetRead.getRange(readRow, readCol).getA1Notation() + " :: value " + sheetData[readRow][readCol] + " :: date " + readDate);
+          
         }//if
         writeCol = 1;
+
       }//for-readCol
       readCol = 1;
+
     }//for-readRow
     readRow = 2;
     sensorRow++;
     writeRow++;
+
   }
 }
 
