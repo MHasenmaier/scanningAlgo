@@ -1,0 +1,147 @@
+/** ### VERY IMPORTANT ### VERY IMPORTANT ### VERY IMPORTANT ### VERY IMPORTANT ### VERY IMPORTANT ###
+ *   
+ * name your database "read"
+ * name your monitoring-sheet "write"
+ * or change that in the functions
+ * 
+ * ### VERY IMPORTANT ### VERY IMPORTANT ### VERY IMPORTANT ### VERY IMPORTANT ### VERY IMPORTANT ### 
+ */
+//
+
+
+// ################## array-based function ################## //
+/**
+ * be careful with this function.
+ * at large databases it causes in heavy performance troubles
+ * if you run it at a large one - make some coffee and give it some time ;)
+ */
+function lookingFor()
+{
+  var spreadSheet =  SpreadsheetApp.getActiveSpreadsheet();
+  var sheetWrite = spreadSheet.getSheetByName("write");
+  var sheetRead = spreadSheet.getSheetByName("read");
+
+  var readLastCol = sheetRead.getLastColumn();
+
+  var readCol = 0;
+  var readRow = 1;
+
+  var writeCol = 1;
+  var writeRow = 9;
+  var sensorCol = 1;
+  var sensorRow = 2;
+  var writeCounter = 1;
+  var sensorCounter = 0;
+
+  var arrayWriting = "";
+
+  var sheetData = sheetRead.getDataRange().getValues();
+  var sensorID = parseInt(sheetWrite.getRange(sensorRow,sensorCol).getValue(), 16);
+  Logger.log("sensorID:: " + sensorID);
+
+
+  while (sheetWrite.getRange(sensorRow, sensorCol).isBlank() === false)
+  {
+    Logger.log("\n");
+    Logger.log("SensorCounter :: " + sensorCounter + " :: sensorRow " + sensorRow);
+    Logger.log("sheetData.length :: " + sheetData.length);
+
+    var sensorID = parseInt(sheetWrite.getRange(sensorRow,sensorCol).getValue(), 16);
+
+    for (readRow; readRow < sheetData.length; readRow++)
+    {
+      Logger.log("for readRow :: " + readRow);
+
+      for (readCol; readCol <= readLastCol; readCol++)
+      {
+        Logger.log("log:: position (readRow " + readRow + "/readCol " + readCol + ") :: at " + readCol + ". turn on readCol :::: position(writeRow " + writeRow + "/writeCol " + writeCol + "):: at " + writeCounter + ". turn on writeCounter ");
+        arrayWriting = arrayWriting + sheetData[readRow][readCol];
+        Logger.log("log:: sheetData[" + readRow + "][" + readCol + "] (" + arrayWriting + ") === sensorID (" + sensorID + ")");
+        arrayWriting = "";
+
+        if (sheetData[readRow][readCol] === sensorID)
+        {
+          Logger.log("if sheetData[readCol][readRow]");
+
+          //copy date
+          var readDate = sheetRead.getRange(readRow,1).getValue();
+          sheetWrite.getRange(writeRow, writeCol).setValue(readDate);
+          writeCol++;
+          //copy sensorID
+          sheetWrite.getRange(writeRow, writeCol).setValue(sheetData[readRow][readCol]);
+          writeRow++;
+
+          writeCounter++;
+          Logger.log("log:: cell " + sheetRead.getRange(readRow, readCol).getA1Notation() + " :: value " + sheetData[readRow][readCol] + " :: date " + readDate);
+        }//if
+        writeCol = 1;
+      }//for-readCol
+      readCol = 1;
+    }//for-readRow
+    readRow = 2;
+    sensorRow++;
+    writeRow++;
+  }
+}
+
+
+// ################## cell-per-cell function ################## //
+/**
+ * this one will take a lot of time
+ * and 'a lot' in this context is equal to about 20 min or more
+ * but your computer will not suffer under performance problems like the other function
+ */
+/**
+function slowButSafe()
+{ 
+  var spreadSheet =  SpreadsheetApp.getActiveSpreadsheet();
+  var sheetWrite = spreadSheet.getSheetByName("write");
+  var sheetRead = spreadSheet.getSheetByName("read2");
+  
+  var readLastCol = sheetRead.getLastColumn();  
+  var readLastRow = sheetRead.getLastRow();
+  var readCol = 1;
+  var readRow = 2;
+
+  var writeCol = 1;
+  var writeRow = 9;
+  var sensorCol = 1;
+  var sensorRow = 2;
+  var writeCounter = 1;
+  var sensorCounter = 0;
+
+  sensorCounter = sheetWrite.getRange(1,2).getValue() + 1;
+
+  Logger.log("SensorCounter :: " + sensorCounter);
+
+  for (sensorRow; sensorRow <= sensorCounter; sensorRow++)
+  {
+    for (readRow; readRow <= 10; readRow++)  //<= readLastRow
+    {
+      for (readCol; readCol <= readLastCol; readCol++)  //<= readLastCol
+      {
+        Logger.log("log:: position (read): " + readRow + "/" + readCol + " :: at " + readCol + ". turn on readCol :::: position(write): " + writeRow + "/" + writeCol + " :: at " + writeCounter + ". turn on writeCounter ");
+        //is cell value === sensor ID?
+        var getCellValue = sheetRead.getRange(readRow, readCol).getValue();
+        var sensorID = parseInt(sheetWrite.getRange(sensorRow,sensorCol).getValue(), 16);
+        if(getCellValue === sensorID)
+        {
+          //copy date
+          var readDate = sheetRead.getRange(readRow,1).getValue();
+          sheetWrite.getRange(writeRow, writeCol).setValue(readDate);
+          writeCol++;
+          //copy sensorID
+          sheetWrite.getRange(writeRow, writeCol).setValue(getCellValue);
+          writeRow++;
+          writeCounter++;
+          
+          Logger.log("log:: cell " + sheetRead.getRange(readRow, readCol).getA1Notation() + " :: value " + getCellValue + " :: date " + readDate);
+        }//if
+        writeCol = 1;
+      }//for-readCol
+      readCol = 1;
+    }//for-readRow
+    readRow = 2;
+  }
+}
+*/
